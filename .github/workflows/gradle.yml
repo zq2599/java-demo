@@ -33,16 +33,13 @@ jobs:
       run: |
         echo "${DOCKER_PASSWORD}" | docker login --username ${DOCKER_USERNAME} --password-stdin
     - name: Set up Docker Buildx
-        id: buildx
-        uses: crazy-max/ghaction-docker-buildx@v1
-        with:
-          buildx-version: latest
-          - name: Build dockerfile (with push)
-            env:
-              DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-            run: |
-              cd demowebapp && docker buildx build \
-              --platform=linux/amd64,linux/arm/v7,linux/arm64 \
-              --output "type=image,push=true" \
-              --file ./Dockerfile . \
-              --tag bolingcavalry/demowebapp-docker:`date "+%Y%m%d%H%M%S"`
+      uses: crazy-max/ghaction-docker-buildx@v1
+      with:
+        buildx-version: latest
+    - name: Build dockerfile (with push)
+      run: |
+        cd demowebapp && docker buildx build \
+        --platform=linux/amd64,linux/arm/v7,linux/arm64 \
+        --output "type=image,push=true" \
+        --file ./Dockerfile . \
+        --tag bolingcavalry/demowebapp-docker:`date "+%Y%m%d%H%M%S"`
