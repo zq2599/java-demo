@@ -26,5 +26,23 @@ jobs:
       run: ./gradlew build
     - name: Extract files from jar
       run: mkdir -p demowebapp/build/dependency && (cd demowebapp/build/dependency; jar -xf ../libs/*.jar)
-    - name: Build docker image
-      run: cd demowebapp && docker build -t springio/demowebapp-docker:`date "+%Y%m%d%H%M%S"` . && cd ..
+    - name: Login docker hub
+      env:
+        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: |
+        echo "${DOCKER_PASSWORD}" | docker login --username ${DOCKER_USERNAME} --password-stdin
+    - name: Set up Docker Buildx
+        id: buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+        with:
+          buildx-version: latest
+          - name: Build dockerfile (with push)
+            env:
+              DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            run: |
+              cd demowebapp && docker buildx build \
+              --platform=linux/amd64,linux/arm/v7,linux/arm64 \
+              --output "type=image,push=true" \
+              --file ./Dockerfile . \
+              --tag bolingcavalry/demowebapp-docker:`date "+%Y%m%d%H%M%S"`
