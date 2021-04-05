@@ -1,0 +1,4 @@
+rootProject.name = 'java-demo'
+include 'democlient'
+include 'demowebapp'
+
