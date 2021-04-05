@@ -27,4 +27,4 @@ jobs:
     - name: Extract files from jar
       run: mkdir -p demowebapp/build/dependency && (cd demowebapp/build/dependency; jar -xf ../libs/*.jar)
     - name: Build docker image
-      run: cd demowebapp && docker build -t springio/demowebapp-docker . && cd ..
+      run: cd demowebapp && docker build -t springio/demowebapp-docker:`date "+%Y%m%d%H%M%S"` . && cd ..
