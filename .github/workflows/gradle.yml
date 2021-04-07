@@ -24,10 +24,6 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: echo "Hello ${{ github.event.commits[0].id }}"
-    - name: Try substring
-      run: |
-        fullName="${{ github.event.commits[0].id }}" && \
-        echo "------${fullName: 0: 8}"
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
@@ -46,8 +42,10 @@ jobs:
         buildx-version: latest
     - name: Build dockerfile (with push)
       run: |
-        cd demowebapp && docker buildx build \
+        cd demowebapp && \
+        fullCommit="${{ github.event.commits[0].id }}" && \
+        docker buildx build \
         --platform=linux/amd64,linux/arm/v7,linux/arm64 \
         --output "type=image,push=true" \
         --file ./Dockerfile . \
-        --tag bolingcavalry/demowebapp-docker:`date "+%Y%m%d%H%M%S"`
+        --tag bolingcavalry/demowebapp-docker:"${fullCommit: 0: 7}"
