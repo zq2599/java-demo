@@ -23,11 +23,11 @@ jobs:
     - name: Dump GitHub context
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: echo "$GITHUB_CONTEXT"
-    - name: Dump job context
-      env:
-        JOB_CONTEXT: ${{ toJSON(job) }}
-      run: echo "$JOB_CONTEXT"    
+      run: echo "Hello ${{ github.event.commits[0].id }}"
+    - name: Try substring
+      run: |
+        fullName="${{ github.event.commits[0].id }}" && \
+        echo "------${fullName: 0: 8}"
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
