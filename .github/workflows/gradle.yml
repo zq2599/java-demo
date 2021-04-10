@@ -52,6 +52,8 @@ jobs:
         buildx-version: latest
     - name: Build dockerfile (with push)
       # 构建镜像，用buildx可以同时构建X86和ARM架构的镜像，然后推送到hub.docker.com
+      # fullCommit变量是从github环境变量中取得的一个字段，内容是本次提交的id
+      # 在制作镜像时，tag是fullCommit的前七位，也就是我们经常提交github时的commitid
       run: |
         cd demowebapp && \
         fullCommit="${{ github.event.commits[0].id }}" && \
